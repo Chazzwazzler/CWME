@@ -18,6 +18,6 @@ Set the API compatibility level to .Net Framework in the Player category of your
 
 If you have any feedback for things that should be added to CWME please email me at chazzwazzlerdev@gmail.com with your suggestions, that is where I will be most likely to see it. It's best to post issues on the issues page on the repository so that other people can see it.
 
-I, and I'm sure anyone using CWME, would be infinitely greatful if you were to contribute to CWME. It takes a load off my shoulders and improves the mod engine for everyone, including me, since I am going to be using it in my current game project.
+I, and I'm sure anyone using CWME, would be very grateful if you were to contribute to CWME. It takes a load off my shoulders and improves the mod engine for everyone, including me, since I am going to be using it in my current game project.
 
 
