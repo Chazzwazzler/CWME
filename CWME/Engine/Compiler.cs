@@ -6,11 +6,19 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 
-namespace CWMod{
+namespace CWMod
+{
     public class Compiler
     {
-        public static void CacheMods(){
-            if(!Directory.Exists(Application.persistentDataPath + "/Cached")){
+        /// <summary>
+        /// Creates a folder for each mod in persistentDataPath/Cached/, and concatenates 
+        /// all of the .cs files in each mod as one .txt in the mod's respective folder.
+        /// The cache folder will be cleared or created if necessary before caching any mods.
+        /// </summary>
+        public static void CacheMods()
+        {
+            if (!Directory.Exists(Application.persistentDataPath + "/Cached"))
+            {
                 Directory.CreateDirectory(Application.persistentDataPath + "/Cached");
             }
 
@@ -18,18 +26,19 @@ namespace CWMod{
 
             foreach (FileInfo file in dir.GetFiles())
             {
-                file.Delete(); 
+                file.Delete();
             }
             foreach (DirectoryInfo _dir in dir.GetDirectories())
             {
-                _dir.Delete(true); 
+                _dir.Delete(true);
             }
-            
 
-            if(!Directory.Exists(Application.dataPath + "/mods")){
-                return; 
+
+            if (!Directory.Exists(Application.dataPath + "/mods"))
+            {
+                return;
             }
-            
+
             string[] directories = Directory.GetDirectories(Application.dataPath + "/mods");
 
             foreach (var directory in directories)
@@ -40,16 +49,20 @@ namespace CWMod{
                 List<string> code = new List<string>();
                 string Base = "";
 
-                foreach (FileInfo f in info){
-                    if(!f.Name.Contains(".meta") && !f.Name.Contains(".txt")){
-                        File.Copy(f.FullName, Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/"+f.Name+".txt");
-                        if(f.Name == "Base.cs"){
-                            Base = File.ReadAllText(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/"+f.Name+".txt");
+                foreach (FileInfo f in info)
+                {
+                    if (!f.Name.Contains(".meta") && !f.Name.Contains(".txt"))
+                    {
+                        File.Copy(f.FullName, Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/" + f.Name + ".txt");
+                        if (f.Name == "Base.cs")
+                        {
+                            Base = File.ReadAllText(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/" + f.Name + ".txt");
                         }
-                        else{
-                            code.Add(File.ReadAllText(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/"+f.Name+".txt"));   
+                        else
+                        {
+                            code.Add(File.ReadAllText(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/" + f.Name + ".txt"));
                         }
-                        File.Delete(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/"+f.Name+".txt");
+                        File.Delete(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/" + f.Name + ".txt");
                     }
                 }
                 code.Insert(0, Base);
@@ -57,22 +70,30 @@ namespace CWMod{
             }
         }
 
-        public static Assembly Compile (string source) {
-            var options = new CompilerParameters ();
+        /// <summary>
+        /// Compiles C# code from a string as an assembly. See information on how to use assemblies 
+        /// <a href="https://learn.microsoft.com/en-us/dotnet/api/system.reflection.assembly?view=net-8.0">here</a>.
+        /// </summary>
+        public static Assembly Compile(string source)
+        {
+            var options = new CompilerParameters();
             options.GenerateExecutable = false;
             options.GenerateInMemory = true;
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies ()) {
-                if (!assembly.IsDynamic) {
-                    options.ReferencedAssemblies.Add (assembly.Location);
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (!assembly.IsDynamic)
+                {
+                    options.ReferencedAssemblies.Add(assembly.Location);
                 }
             }
 
-            var compiler = new CSharpCompiler.CodeCompiler ();
-            var result = compiler.CompileAssemblyFromSource (options, source);
+            var compiler = new CSharpCompiler.CodeCompiler();
+            var result = compiler.CompileAssemblyFromSource(options, source);
 
-            foreach (var err in result.Errors) {
-                Debug.Log (err);
+            foreach (var err in result.Errors)
+            {
+                Debug.Log(err);
             }
 
             return result.CompiledAssembly;

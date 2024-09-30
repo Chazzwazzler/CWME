@@ -13,14 +13,20 @@ namespace CWMod
         public static List<Assembly> mods = new List<Assembly>();
 
         public const int DEFAULT_PPU = 32;
-        public static Vector2 DEFAULT_PIVOT = new Vector2(0.5f,0.5f);
-        
-        //Sprite with default pivot point
-        public static Sprite CustomSprite(string imagePath, int pixelsPerUnit = DEFAULT_PPU){
-            return CustomSprite(imagePath, DEFAULT_PIVOT , pixelsPerUnit);
+        public static Vector2 DEFAULT_PIVOT = new Vector2(0.5f, 0.5f);
+
+        /// <summary>
+        /// Load a path to an image as a sprite.
+        /// </summary>
+        public static Sprite CustomSprite(string imagePath, int pixelsPerUnit = DEFAULT_PPU)
+        {
+            return CustomSprite(imagePath, DEFAULT_PIVOT, pixelsPerUnit);
         }
-        //Sprite with custom pivot point
-        public static Sprite CustomSprite(string imagePath, Vector2 pivotPoint, int pixelsPerUnit = DEFAULT_PPU){
+        /// <summary>
+        /// Load a path to an image as a sprite.
+        /// </summary>
+        public static Sprite CustomSprite(string imagePath, Vector2 pivotPoint, int pixelsPerUnit = DEFAULT_PPU)
+        {
             string path = Application.dataPath + "/mods/" + imagePath;
 
             Sprite customSprite;
@@ -34,11 +40,17 @@ namespace CWMod
             return customSprite;
         }
 
-        public static void ReplaceSpriteInScene(string spriteName, Sprite sprite){
+        /// <summary>
+        /// Replace all references to a sprite in the scene with a sprite of your choice.
+        /// </summary>
+        public static void ReplaceSpriteInScene(string spriteName, Sprite sprite)
+        {
             SpriteRenderer[] renderers = GameObject.FindObjectsOfType<SpriteRenderer>();
-            
-            foreach (var renderer in renderers){
-                if(renderer.sprite.name == spriteName){
+
+            foreach (var renderer in renderers)
+            {
+                if (renderer.sprite.name == spriteName)
+                {
                     renderer.sprite = sprite;
                 }
             }
