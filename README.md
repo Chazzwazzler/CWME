@@ -1,13 +1,23 @@
-basically full credit to https://github.com/JakubNei/mcs-ICodeCompiler, which uses MCS to compile code
-I didn't make the compiler or anything myself, just the file related stuff and all that. Basically stuff to make it customized towards my own use case.
+The CW Mod Engine (CWME) is a mod engine using [mcs-ICodeCompiler](https://github.com/JakubNei/mcs-ICodeCompiler) to run C# code at runtime, long with some utilities and file loading/conversion scripts to make it more useful for modding.
 
-Set the API compatibility level to .Net Framework in the player settings for the compiler to work properly. For some reason it breaks and gives a bunch of errors if you don't.
+**CWME has to be added to the actual unity project of the game. This is meant as a way for developers to officially add mod support to their games.**
 
-This is largely meant for personal use (because there are like 4 trillion better ways to implement modding into your unity games, I just didn't know about them when I was trying to get this working and sunk-cost fallacy hits HARD) but if anyone is using this I hope it serves you well in your game(s). 
+## Installing & Setting Up CWME
 
-If you have any feedback for things that should be added in by default (utility functions like the image api, menus, etc.) please email me at chazzwazzlerdev@gmail.com with your suggestions, that is where I will be most likely to see it. 
+CD into where you wish to download the folder for CWME, and run the following command (git must be installed): `git clone https://github.com/Chazzwazzler/CW-Mod.git`
 
-I would like to develop this further to make it easier for modders, developers, and mod users to do things involving mods because I believe modding is a very important part of any games. I use this mod thing, so it is as beneficial for me to have it improved as it is for you. So feedback along with the kind of functions you like giving to modders is very welcome (I am not creative enough nor experienced enough in modding to know what a modder needs to build really good mods). 
+You should probably download CWME into the Assets folder of your Unity project.
 
-CWMod Version 0.1.0b
-Read HOWTOUSE.txt to figure out how to mod your games and use the built in functions. 
+If you do not wish to install git or use the command line, you can download the main branch as a zip folder from [this link](https://github.com/Chazzwazzler/CW-Mod/archive/refs/heads/main.zip).
+
+### If adding CWME to your project gives you errors
+
+Set the API compatibility level to .Net Framework in the Player category of your project settings for mcs-ICodeCompiler to work properly. This should resolve any errors coming from the compiler scripts.
+
+## Suggestions, issues, and contributions
+
+If you have any feedback for things that should be added to CWME please email me at chazzwazzlerdev@gmail.com with your suggestions, that is where I will be most likely to see it. It's best to post issues on the issues page on the repository so that other people can see it.
+
+I, and I'm sure anyone using CWME, would be infinitely greatful if you were to contribute to CWME. It takes a load off my shoulders and improves the mod engine for everyone, including me, since I am going to be using it in my current game project.
+
+
