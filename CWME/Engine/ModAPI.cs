@@ -3,7 +3,7 @@ using UnityEngine;
 using System.IO;
 using CSharpCompiler;
 
-namespace CWMod
+namespace CWME
 {
     public class ModAPI
     {

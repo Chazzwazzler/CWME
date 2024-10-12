@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Reflection;
 
-namespace CWMod
+namespace CWME
 {
     public static class ComponentValues
     {

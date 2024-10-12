@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CWMod
+namespace CWME
 {
     public class ObjectAPI
     {

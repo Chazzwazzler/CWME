@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 
-namespace CWMod
+namespace CWME
 {
     public class ImageAPI
     {
