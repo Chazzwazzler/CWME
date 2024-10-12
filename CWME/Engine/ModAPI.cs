@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.IO;
+using CSharpCompiler;
 
 namespace CWMod
 {
@@ -10,17 +11,14 @@ namespace CWMod
         /// Generates an assembly for every cached mod and runs a function of your choice on a static class of your choice 
         /// (Base by default) on every mod. Generally, this will be how you load, initialize, and unload mods.
         /// </summary>
-        public static void RunFunctionOnAll(string Function, string Class = "Base")
+        public static void RunFunctionOnAll(string Function = "Main", string Class = "Base")
         {
             string[] directories = Directory.GetDirectories(Application.persistentDataPath + "/Cached");
 
             foreach (var directory in directories)
             {
-                var assembly = Compiler.Compile(File.ReadAllText(directory + "/Script.txt"));
-
-                var method = assembly.GetType(Class).GetMethod(Function);
-                var del = (Action)Delegate.CreateDelegate(typeof(Action), method);
-                del.Invoke();
+                var assembly = Compiler.CompileFile(directory + "/Script.txt");
+                assembly.RunMethod(Class, Function);
             }
         }
     }
