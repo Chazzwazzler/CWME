@@ -74,10 +74,11 @@ namespace CWME
                 foreach (var directive in root.Usings)
                 {
                     usingDirectives.Add(directive.ToString());
-                    scripts[i].Replace(directive.ToString(), "");
+                    scripts[i] = scripts[i].Replace(directive.ToString(), "");
                 }
             }
-            string[] reordered = usingDirectives.Distinct().ToArray().Concat(scripts).ToArray();
+            usingDirectives = usingDirectives.Distinct().ToList();
+            string[] reordered = usingDirectives.ToArray().Concat(scripts).ToArray();
             return String.Join(" ", reordered);
         }
 
