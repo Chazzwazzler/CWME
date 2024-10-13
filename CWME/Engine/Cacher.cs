@@ -1,13 +1,10 @@
 using System;
-using System.Reflection;
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using UnityEngine.UI;
 using System.Linq;
 
 namespace CWME
