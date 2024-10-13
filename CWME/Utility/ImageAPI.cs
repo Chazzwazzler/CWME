@@ -24,7 +24,7 @@ namespace CWME
         /// </summary>
         public static Sprite CustomSprite(string imagePath, Vector2 pivotPoint, int pixelsPerUnit = DEFAULT_PPU)
         {
-            string path = Application.dataPath + "/mods/" + imagePath;
+            string path = Path.Join(ModAPI.modsDirectory, imagePath);
 
             Sprite customSprite;
 

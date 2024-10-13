@@ -3,11 +3,33 @@ using System.Reflection;
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using UnityEngine.UI;
+using System.Linq;
 
 namespace CWME
 {
     public class Cacher
     {
+        public static string cacheDirectory = Application.persistentDataPath + "/Cached";
+        public static string cachedScriptName = "Script.cs";
+
+        public static void SetDirectory(string directory)
+        {
+            if (directory == cacheDirectory)
+            {
+                ClearCache();
+                return;
+            }
+
+            DeleteCache();
+            cacheDirectory = directory;
+            CreateCache();
+        }
+
         /// <summary>
         /// Creates a folder for each mod in persistentDataPath/Cached/, and concatenates 
         /// all of the .cs files in each mod as one .txt in the mod's respective folder.
@@ -15,57 +37,92 @@ namespace CWME
         /// </summary>
         public static void CacheMods()
         {
-            if (!Directory.Exists(Application.persistentDataPath + "/Cached"))
-            {
-                Directory.CreateDirectory(Application.persistentDataPath + "/Cached");
-            }
+            CreateCache();
 
-            DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath + "/Cached");
-
-            foreach (FileInfo file in dir.GetFiles())
-            {
-                file.Delete();
-            }
-            foreach (DirectoryInfo _dir in dir.GetDirectories())
-            {
-                _dir.Delete(true);
-            }
-
-
-            if (!Directory.Exists(Application.dataPath + "/mods"))
+            if (!Directory.Exists(ModAPI.modsDirectory))
             {
                 return;
             }
 
-            string[] directories = Directory.GetDirectories(Application.dataPath + "/mods");
+            string[] directories = Directory.GetDirectories(ModAPI.modsDirectory);
 
             foreach (var directory in directories)
             {
-                Directory.CreateDirectory(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name);
-                FileInfo[] info = new DirectoryInfo(directory).GetFiles("*.cs*");
+                DirectoryInfo dirInfo = new DirectoryInfo(directory);
+
+                string cachedModDirectory = Path.Join(cacheDirectory, dirInfo.Name);
+                Directory.CreateDirectory(cachedModDirectory);
+                FileInfo[] info = dirInfo.GetFiles("*.cs", SearchOption.AllDirectories);
 
                 List<string> code = new List<string>();
-                string Base = "";
 
                 foreach (FileInfo f in info)
                 {
-                    if (!f.Name.Contains(".meta") && !f.Name.Contains(".txt"))
-                    {
-                        File.Copy(f.FullName, Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/" + f.Name + ".txt");
-                        if (f.Name == "Base.cs")
-                        {
-                            Base = File.ReadAllText(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/" + f.Name + ".txt");
-                        }
-                        else
-                        {
-                            code.Add(File.ReadAllText(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/" + f.Name + ".txt"));
-                        }
-                        File.Delete(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/" + f.Name + ".txt");
-                    }
+                    string scriptText = File.ReadAllText(f.FullName);
+                    code.Add(scriptText);
                 }
-                code.Insert(0, Base);
-                File.WriteAllLines(Application.persistentDataPath + "/Cached/" + new DirectoryInfo(directory).Name + "/Script.txt", code);
+
+                string scripts = JoinScripts(code.ToArray());
+                File.WriteAllText(Path.Join(cachedModDirectory, cachedScriptName), scripts);
             }
+        }
+
+        public static string JoinScripts(string[] scripts)
+        {
+            List<string> usingDirectives = new List<string>();
+            for (int i = 0; i < scripts.Length; i++)
+            {
+                SyntaxTree tree = CSharpSyntaxTree.ParseText(scripts[i]);
+                CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
+                foreach (var directive in root.Usings)
+                {
+                    usingDirectives.Add(directive.ToString());
+                    scripts[i].Replace(directive.ToString(), "");
+                }
+            }
+            string[] reordered = usingDirectives.Distinct().ToArray().Concat(scripts).ToArray();
+            return String.Join(" ", reordered);
+        }
+
+        public static void ClearCache()
+        {
+            if (!Directory.Exists(cacheDirectory))
+            {
+                return;
+            }
+
+            DirectoryInfo cacheDir = new DirectoryInfo(cacheDirectory);
+
+            foreach (FileInfo file in cacheDir.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in cacheDir.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+
+        public static void DeleteCache()
+        {
+            if (!Directory.Exists(cacheDirectory))
+            {
+                return;
+            }
+
+            DirectoryInfo cacheDir = new DirectoryInfo(cacheDirectory);
+            cacheDir.Delete(true);
+        }
+
+        public static void CreateCache()
+        {
+            if (Directory.Exists(cacheDirectory))
+            {
+                ClearCache();
+                return;
+            }
+
+            Directory.CreateDirectory(cacheDirectory);
         }
     }
 

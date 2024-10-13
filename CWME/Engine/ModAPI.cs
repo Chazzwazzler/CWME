@@ -8,6 +8,8 @@ namespace CWME
 {
     public class ModAPI
     {
+        public static string modsDirectory = Application.dataPath + "/mods";
+
         public static void RunMethodOnCached(string type = "Base", string method = "Main")
         {
             Assembly[] assemblies = CompileCache();
@@ -19,11 +21,11 @@ namespace CWME
 
         public static Assembly[] CompileCache()
         {
-            string[] directories = Directory.GetDirectories(Application.persistentDataPath + "/Cached");
+            string[] directories = Directory.GetDirectories(Cacher.cacheDirectory);
             Assembly[] assemblies = new Assembly[directories.Length];
             for (int i = 0; i < assemblies.Length; i++)
             {
-                assemblies[i] = Compiler.CompileFile(directories[i] + "/Script.txt");
+                assemblies[i] = Compiler.CompileFile(Path.Join(directories[i], Cacher.cachedScriptName));
             }
             return assemblies;
         }
