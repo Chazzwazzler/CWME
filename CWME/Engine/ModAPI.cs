@@ -2,24 +2,30 @@ using System;
 using UnityEngine;
 using System.IO;
 using CSharpCompiler;
+using System.Reflection;
 
 namespace CWME
 {
     public class ModAPI
     {
-        /// <summary>
-        /// Generates an assembly for every cached mod and runs a function of your choice on a static class of your choice 
-        /// (Base by default) on every mod. Generally, this will be how you load, initialize, and unload mods.
-        /// </summary>
-        public static void RunFunctionOnAll(string Function = "Main", string Class = "Base")
+        public static void RunMethodOnCached(string type = "Base", string method = "Main")
+        {
+            Assembly[] assemblies = CompileCache();
+            foreach (var assembly in assemblies)
+            {
+                assembly.RunMethod(type, method);
+            }
+        }
+
+        public static Assembly[] CompileCache()
         {
             string[] directories = Directory.GetDirectories(Application.persistentDataPath + "/Cached");
-
-            foreach (var directory in directories)
+            Assembly[] assemblies = new Assembly[directories.Length];
+            for (int i = 0; i < assemblies.Length; i++)
             {
-                var assembly = Compiler.CompileFile(directory + "/Script.txt");
-                assembly.RunMethod(Class, Function);
+                assemblies[i] = Compiler.CompileFile(directories[i] + "/Script.txt");
             }
+            return assemblies;
         }
     }
 }
